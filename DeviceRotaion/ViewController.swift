@@ -14,6 +14,7 @@ class ViewController: UIViewController {
     var deviceScreen: CGSize = CGSize()
 
     @IBOutlet weak var imageSingle: UIImageView!
+    var picImageView: UIImageView!
 
     @IBAction func doAction(_ sender: UIButton) {
         UIView.animate(withDuration: 0.2, animations: {
@@ -81,34 +82,37 @@ class ViewController: UIViewController {
     override func viewDidLayoutSubviews() {
         super.viewDidLayoutSubviews()
 
-        let picImageView: UIImageView!
-
         deviceHeight = UIScreen.main.bounds.size.height
         deviceWidth = UIScreen.main.bounds.size.width
         deviceScreen = UIScreen.main.bounds.size
         print("viewDidLayoutSubviews .width = \(deviceScreen.width), .height= \(deviceScreen.height)")
 
+        if picImageView == nil {
+            picImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: deviceWidth, height: deviceHeight))
+        }
+
         switch UIDevice.current.orientation {
         case .landscapeLeft, .landscapeRight:
             imageSingle.image = UIImage(named: "landscape")
 
-            picImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: deviceWidth, height: deviceHeight))
             picImageView.image = UIImage(named: "picLandscape")
             picImageView.contentMode = .scaleAspectFill
             picImageView.clipsToBounds = true
-            self.view.addSubview(picImageView)
-            self.view.sendSubview(toBack: picImageView)
         case .portrait, .portraitUpsideDown:
             imageSingle.image = UIImage(named: "portrait")
 
-            picImageView = UIImageView(frame: CGRect(x: 0, y: 0, width: deviceWidth, height: deviceHeight))
             picImageView.image = UIImage(named: "picPortrait")
             picImageView.contentMode = .scaleAspectFill
             picImageView.clipsToBounds = true
-            self.view.addSubview(picImageView)
-            self.view.sendSubview(toBack: picImageView)
         default:
             print("others")
+        }
+
+        if picImageView != nil {
+            picImageView.removeFromSuperview()
+            picImageView.frame = CGRect(x: 0, y: 0, width: deviceWidth, height: deviceHeight)
+            self.view.addSubview(picImageView)
+            self.view.sendSubview(toBack: picImageView)
         }
     }
     override func viewWillTransition(to size: CGSize, with coordinator: UIViewControllerTransitionCoordinator) {
